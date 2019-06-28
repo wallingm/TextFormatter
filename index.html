@@ -6,8 +6,8 @@
     <h2>Text Formatter</h2>
 
     Page Number: <input id="pageNum" type="number" size="10" value="1" style="margin-bottom: 5px"><br>
-    Header 1: <input id="header1" type="text" size="40" value="Header1" style="margin-bottom: 5px"><br>
-    Header 2: <input id="header2" type="text" size="40" value="Header2" style="margin-bottom: 5px"><br>
+    Header 1: <input id="header1" type="text" size="40" value="" style="margin-bottom: 5px"><br>
+    Header 2: <input id="header2" type="text" size="40" value="" style="margin-bottom: 5px"><br>
     
     Body:<br>
     <textarea id="body" rows="5" cols="80"></textarea><br>
@@ -33,7 +33,7 @@
         var h2 = document.getElementById("header2").value;
         var b = document.getElementById("body").value;
         
-        if (pg.length != 0) { mainArray.push("\n" + "###" + pg + "\n"); }
+        if (pg.length != 0) { mainArray.push("###" + pg + "\n"); }
         if (h1.length != 0) { mainArray.push(h1 + "\n\n"); }
         if (h2.length != 0) { mainArray.push(h2 + "\n\n"); }
         //if (b.length != 0) { array.push(b + "\n\n"); }
@@ -42,7 +42,7 @@
         
         
         //Find sentences and push to array
-        bodyArray = b.match(/[^\.!\?]+[\.!\?]+/g);
+        bodyArray = b.match(/([^\.!\?]+[\.!\?]+)|([^\.!\?]+$)/g);
         
         if (bodyArray != null) { 
             //Trim text
@@ -50,12 +50,15 @@
                 bodyArray[i] = bodyArray[i].trim()+"\n"
             }
             //Add to main array
-            mainArray = mainArray.concat(bodyArray); }
+            mainArray = mainArray.concat(bodyArray); 
+        }
+        mainArray.push("\n");
         //console.log(mainArray);
         
         //Update Textbox
         for (var i = 0; i < mainArray.length; i++) {
-            result += mainArray[i]; }
+            result += mainArray[i];
+        }
         
         document.getElementById("result").value = result;
         
