@@ -1,23 +1,68 @@
 <!DOCTYPE html>
 <html>
+<head>
     <title>Text Formatter</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        
+        * {
+          box-sizing: border-box;
+        }
+
+        /* Create two equal columns that floats next to each other */
+        .columnleft {
+          float: left;
+          width: 50%;
+          padding: 10px;
+        }
+        .columnright {
+          float: right;
+          width: 50%;
+          padding: 10px;
+        }
+
+        /* Clear floats after the columns */
+        .row:after {
+          content: "";
+          display: table;
+          clear: both;
+        }
+    </style>
+</head>
 <body>
 
     <h2>Text Formatter</h2>
+    Page Number: <input id="pageNum" type="number" value="1" style=" width: 10%; margin-bottom: 5px"><br>
+    <div class="row">    
+        
+        <!-- Left Page -->
+        <div class="columnleft">
+            <b>Left Page</b><br>
+            Heading 1: <input id="header1L" type="text" style="width: 100%; margin-bottom: 5px"><br>
+            Heading 2: <input id="header2L" type="text" style="width: 100%; margin-bottom: 5px"><br>
 
-    Page Number: <input id="pageNum" type="number" size="10" value="1" style="margin-bottom: 5px"><br>
-    Heading 1: <input id="header1" type="text" size="40" value="" style="margin-bottom: 5px"><br>
-    Heading 2: <input id="header2" type="text" size="40" value="" style="margin-bottom: 5px"><br>
+            Body:<br>
+            <textarea id="bodyL" style="width:100%; height:75px"></textarea><br>
+        </div>
+        
+        <!-- Right Page -->
+        <div class="columnright">
+            <b>Right Page</b><br>
+            Heading 1: <input id="header1R" type="text" style="width: 100%; margin-bottom: 5px"><br>
+            Heading 2: <input id="header2R" type="text" style="width: 100%; margin-bottom: 5px"><br>
     
-    Body:<br>
-    <textarea id="body" rows="5" cols="80"></textarea><br>
-    <button onclick="clearBody()" style="margin-bottom: 5px">Clear Body</button>
-    <button onclick="clearResult()" style="margin-bottom: 5px">Clear Result</button><br>
-    <button onclick="format()" style="padding-left: 65px; padding-right: 65px; padding-top: 15px; padding-bottom: 15px; margin-bottom: 5px">Format</button><br>
+            Body:<br>
+            <textarea id="bodyR" style="width:100%; height:75px"></textarea><br>
+            
+        </div>
+    </div>
     
-    Result:<br>
-    <textarea id="result" rows="20" cols="80"></textarea><br>
-    
+    <button onclick="format()" style="width: 37%; height: 50px; margin-bottom: 5px">Format</button>
+    <button onclick="clearText()" style="width: 20%; height: 50px; margin-bottom: 5px">Clear Inputs</button>
+    <button onclick="copyResult()" style="width: 20%; height: 50px; margin-bottom: 5px">Copy Result</button>
+    <button onclick="clearResult()" style="width: 20%; height: 50px; margin-bottom: 5px">Clear Result</button><br>
+    Result: 
+    <textarea id="result" style="width:100%; height:240px"></textarea><br>
     
 </body>
 
@@ -25,58 +70,98 @@
     var result = document.getElementById("result").value;
     
     function format() {
+        
         var mainArray = new Array();
-        var bodyArray = new Array();
+        var bodyLArray = new Array();
+        var bodyRArray = new Array();
         
         var pg = document.getElementById("pageNum").value;
-        var h1 = document.getElementById("header1").value;
-        var h2 = document.getElementById("header2").value;
-        var b = document.getElementById("body").value;
+        var h1L = document.getElementById("header1L").value;
+        var h2L = document.getElementById("header2L").value;
+        var bL = document.getElementById("bodyL").value;
+        
+        var h1R = document.getElementById("header1R").value;
+        var h2R = document.getElementById("header2R").value;
+        var bR = document.getElementById("bodyR").value;
         
         if (pg.length != 0) { mainArray.push("###" + pg + "\n"); }
-        if (h1.length != 0) { mainArray.push(h1 + "\n\n"); }
-        if (h2.length != 0) { mainArray.push(h2 + "\n\n"); }
+        if (h1L.length != 0) { mainArray.push(h1L + "\n\n"); }
+        if (h2L.length != 0) { mainArray.push(h2L + "\n\n"); }
         //if (b.length != 0) { array.push(b + "\n\n"); }
         
-        b = b.replace(/\s+/g,' ').trim(); //Remove extra whitespace from body
-        
+        bL = bL.replace(/\s+/g,' ').trim(); //Remove extra whitespace from body
         
         //Find sentences and push to array
-        bodyArray = b.match(/([^\.!\?]+[\.!\?]+)|([^\.!\?]+$)/g);
+        bodyLArray = bL.match(/([^\.!\?]+[\.!\?]+)|([^\.!\?]+$)/g);
         
-        if (bodyArray != null) { 
+        if (bodyLArray != null) { 
             //Trim text
-            for (var i = 0; i < bodyArray.length; i++) {
-                bodyArray[i] = bodyArray[i].trim()+"\n"
+            for (var i = 0; i < bodyLArray.length; i++) {
+                bodyLArray[i] = bodyLArray[i].trim()+"\n"
+            }
+            bodyLArray.push("\n");
+            //Add to main array
+            mainArray = mainArray.concat(bodyLArray); 
+            
+        }
+
+            
+        if (h1R.length != 0) { mainArray.push("---" + h1R + "\n\n"); }
+        if (h2R.length != 0 && h1R.length == 0) { mainArray.push("---" + h2R + "\n\n"); }
+        else if (h2R.length != 0) { mainArray.push(h2R + "\n\n"); }
+        
+        bR = bR.replace(/\s+/g,' ').trim();
+        bodyRArray = bR.match(/([^\.!\?]+[\.!\?]+)|([^\.!\?]+$)/g);
+        if (bodyRArray != null) { 
+            if (h1R.length == 0 && h2R.length == 0) {
+                bodyRArray[0] = "---"+bodyRArray[0];
+            }
+            //Trim text
+            for (var i = 0; i < bodyRArray.length; i++) {
+                bodyRArray[i] = bodyRArray[i]+"\n"
             }
             //Add to main array
-            mainArray = mainArray.concat(bodyArray); 
+            mainArray = mainArray.concat(bodyRArray); 
         }
-        mainArray.push("\n");
-        //console.log(mainArray);
+        
+        if (h1R.length != 0 || h2R.length != 0 || bR != 0) {
+            mainArray.push("\n");
+        } 
         
         //Update Textbox
         for (var i = 0; i < mainArray.length; i++) {
             result += mainArray[i];
         }
-        
         document.getElementById("result").value = result;
         
     }
     
-    function clearBody() { document.getElementById("body").value = ""; }
+    function clearText() { 
+        document.getElementById("header1L").value = ""; 
+        document.getElementById("header2L").value = ""; 
+        document.getElementById("bodyL").value = ""; 
+        
+        document.getElementById("header1R").value = ""; 
+        document.getElementById("header2R").value = ""; 
+        document.getElementById("bodyR").value = ""; 
+    }
     
     function clearResult() {
-        result = ""; //Reset result
-        document.getElementById("result").value = result;
-        
-        mainArray = new Array(); //Reset array
+        var r = confirm("CLEAR RESULT\nAre you sure?");
+        if (r == true) {
+            
+            result = ""; //Reset result
+            document.getElementById("result").value = result;
+            mainArray = new Array(); //Reset array
+        }
     }
     
-    function fix() {
-        //result = result.replace(/\s+/g," ").trim();
-        
+    function copyResult() {
+        var copyText = document.getElementById("result");
+        copyText.select();
+        document.execCommand("copy");
     }
+    
     
 </script>
     
