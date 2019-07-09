@@ -65,8 +65,8 @@
         }
     </style>
 </head>
+    
 <body>
-
     <h2>Text Formatter</h2>
     
     <div class="tab">
@@ -76,7 +76,10 @@
     
     <!-- Transcript Tab -->
     <div id="Transcript" class="tabcontent">
-    <b>Page Number: </b><input id="pageNum" type="number" value="5" style=" width: 15%; margin-bottom: 5px">
+        
+    <b>Page Number: </b><input id="pageNum" type="number" value="5" style=" width: 12%; margin-bottom: 5px">
+    <button onclick="decPageNum()" style="width:25px">-</button>
+    <button onclick="incPageNum()" style="width:25px">+</button>
     <div class="row">    
         
         <!-- Left Page -->
@@ -105,13 +108,22 @@
     <button onclick="clearText()" style="width: 20%; height: 50px; margin-bottom: 5px">Clear Inputs</button>
     <button onclick="copyResult()" style="width: 20%; height: 50px; margin-bottom: 5px">Copy Result</button>
     <button onclick="clearResult()" style="width: 20%; height: 50px; margin-bottom: 5px">Reset All</button><br>
-    Result:<br> 
+    <b>Result:</b><br> 
     <textarea id="result" style="width:100%; height:240px"></textarea><br>
     </div>
     
     <!-- HTML Tab -->
     <div id="HTML" class="tabcontent">
-        <p></p>
+        <b>HTML:</b><br>
+        <textarea id="htmlBody" style="width:100%; height:200px"></textarea><br>
+        
+        <button onclick="htmlFormat()" style="width: 37%; height: 50px; margin-bottom: 5px">Format</button>
+        <button onclick="htmlClearText()" style="width: 20%; height: 50px; margin-bottom: 5px">Clear Input</button>
+        <button onclick="htmlCopyResult()" style="width: 20%; height: 50px; margin-bottom: 5px">Copy Result</button>
+        <button onclick="htmlClearResult()" style="width: 20%; height: 50px; margin-bottom: 5px">Clear Result</button>
+        
+        <b>Result:</b><br>
+        <textarea id="htmlResult" style="width:100%; height:252px"></textarea><br>
     </div>
 </body>
 
@@ -138,8 +150,8 @@
     const sentence = /([^\.!\?]+[\.!\?]+)|([^\.!\?]+$)/g;
     const pronoun = /(Mr|Ms|Mrs|Dr|Capt|Col|St|Sr|Srta|Sra)\./;
     const abbr = /([A-Z]\.)+/;
-    const bothquotes = /["'’”]\s?["'“‘]/;
-    const endquote = /["'’”]\s/;
+    const bothquotes = /^(["'’”] ?["'“‘])/m;
+    const endquote = /^(["'’”] ?)/m;
     const startprice = /([0-9]+\.)/g;
     const endprice = /^( ?[0-9]{2}( |\.))/m;
     const spaceperiod = /( +\.( ?)+(\r\n|\n|\r))/g;
@@ -209,7 +221,6 @@
         } 
         
         ////MAIN ARRAY CORRECTION////
-        
         //Check main array for missing quotations and reorder array
         for (var i = 0; i < mainArray.length; i++) {
             if (mainArray[i].search(bothquotes) != -1) {
@@ -274,6 +285,18 @@
         document.getElementById("result").value = result;
     }
     
+    function incPageNum() {
+        var pg = parseInt(document.getElementById("pageNum").value);
+        pg += 2;
+        document.getElementById("pageNum").value = pg;
+    }
+    
+    function decPageNum() {
+        var pg = parseInt(document.getElementById("pageNum").value);
+        pg -= 2;
+        document.getElementById("pageNum").value = pg;
+    }
+    
     function clearText() { 
         document.getElementById("head1L").value = ""; 
         document.getElementById("head2L").value = ""; 
@@ -283,10 +306,7 @@
         document.getElementById("head2R").value = ""; 
         document.getElementById("bodyR").value = ""; 
         
-        var pg = parseInt(document.getElementById("pageNum").value);
-        pg += 2;
-        document.getElementById("pageNum").value = pg;
-        
+        incPageNum();
     }
     
     function clearResult() {
@@ -311,6 +331,46 @@
         var copyText = document.getElementById("result");
         copyText.select();
         document.execCommand("copy");
+    }
+    
+    
+    
+    //// HTML TAB ////
+    
+    htmlResult = document.getElementById("htmlResult").value;
+    
+    function htmlFormat() {
+        const htmlHeading = "<p id=\"text\" class=\"english\">\n<span style=\"text-align:Left; display:block; font-size:4.0em; color: #ffffff;\">";
+        const htmlFooter = "<\/span>. </\span>\n<\/p>"
+              
+        htmlResult = document.getElementById("htmlResult").value;
+        
+        htmlBody = document.getElementById("htmlBody").value;
+        
+        htmlBody = htmlBody.replace(/(<p id=\"text\" class=\"english\">)/g, htmlHeading);
+        htmlBody = htmlBody.replace(/(<\/span>). ?\n(<\/p>)/gm, htmlFooter);
+    
+        htmlResult = htmlBody;
+        document.getElementById("htmlResult").value = htmlResult;
+            
+    }
+    
+    function htmlClearText() { 
+        document.getElementById("htmlBody").value = ""; 
+    }
+    
+    function htmlCopyResult() {
+        var copyText = document.getElementById("htmlResult");
+        copyText.select();
+        document.execCommand("copy");
+    }
+    
+    function htmlClearResult() {
+        var r = confirm("CLEAR RESULT\nAre you sure?");
+        if (r == true) {
+            htmlResult = ""; //Reset result
+            document.getElementById("htmlResult").value = htmlResult;
+        }
     }
       
 </script> 
