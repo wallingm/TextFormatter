@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Text Formatter</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        /* Create two equal columns that floats next to each other */
+        .columnleft {
+            float: left;
+            width: 50%;
+            padding-right: 5px;
+            padding-bottom: 5px;
+        }
+        .columnright {
+            float: right;
+            width: 50%;
+        }
+        /* Clear floats after the columns */
+        .row:after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+        
+        /* Style the tab */
+        .tab {
+            overflow: hidden;
+            border: 1px solid #ccc;
+            background-color: #f1f1f1;
+        }
+        /* Style the buttons inside the tab */
+        .tab button {
+            background-color: inherit;
+            float: left;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            padding: 14px 16px;
+            transition: 0.3s;
+            font-size: 17px;
+        }
+        /* Change background color of buttons on hover */
+        .tab button:hover {
+            background-color: #ddd;
+        }
+        /* Create an active/current tablink class */
+        .tab button.active {
+            background-color: #ccc;
+        }
+        /* Style the tab content */
+        .tabcontent {
+            display: none;
+            padding: 6px 12px;
+            border: 1px solid #ccc;
+            border-top: none;
+        }
+    </style>
+</head>
+    
+<body>
+    <h2>Text Formatter</h2>
+    
+    <div class="tab">
+        <button class="tablinks" onclick="openTab(event, 'Transcript')" id="defaultOpen">Transcript</button>
+        <button class="tablinks" onclick="openTab(event, 'HTML')">HTML</button>
+    </div>
+    
+    <!-- Transcript Tab -->
+    <div id="Transcript" class="tabcontent">
+        
+    <b>Page Number: </b><input id="pageNum" type="number" value="5" style=" width: 12%; margin-bottom: 5px">
+    <button onclick="decPageNum()" style="width:25px">-</button>
+    <button onclick="incPageNum()" style="width:25px">+</button>
+    <div class="row">    
+        
+        <!-- Left Page -->
+        <div class="columnleft">
+            <b>Left Page</b><br>
+            Heading 1: <input id="head1L" type="text" style="width: 100%; margin-bottom: 5px"><br>
+            Heading 2: <input id="head2L" type="text" style="width: 100%; margin-bottom: 5px"><br>
+
+            Body:<br>
+            <textarea id="bodyL" style="width:100%; height:75px"></textarea><br>
+        </div>
+        
+        <!-- Right Page -->
+        <div class="columnright">
+            <b>Right Page</b><br>
+            Heading 1: <input id="head1R" type="text" style="width: 100%; margin-bottom: 5px"><br>
+            Heading 2: <input id="head2R" type="text" style="width: 100%; margin-bottom: 5px"><br>
+    
+            Body:<br>
+            <textarea id="bodyR" style="width:100%; height:75px"></textarea><br>
+            
+        </div>
+    </div>
+    
+    <button onclick="format()" style="width: 37%; height: 50px; margin-bottom: 5px">Format</button>
+    <button onclick="clearText()" style="width: 20%; height: 50px; margin-bottom: 5px">Clear Inputs</button>
+    <button onclick="copyResult()" style="width: 20%; height: 50px; margin-bottom: 5px">Copy Result</button>
+    <button onclick="clearResult()" style="width: 20%; height: 50px; margin-bottom: 5px">Reset All</button><br>
+    <b>Result:</b><br> 
+    <textarea id="result" style="width:100%; height:240px"></textarea><br>
+    </div>
+    
+    <!-- HTML Tab -->
+    <div id="HTML" class="tabcontent">
+        <b>HTML:</b><br>
+        <textarea id="htmlBody" style="width:100%; height:200px"></textarea><br>
+        
+        <button onclick="htmlFormat()" style="width: 37%; height: 50px; margin-bottom: 5px">Format</button>
+        <button onclick="htmlClearText()" style="width: 20%; height: 50px; margin-bottom: 5px">Clear Input</button>
+        <button onclick="htmlCopyResult()" style="width: 20%; height: 50px; margin-bottom: 5px">Copy Result</button>
+        <button onclick="htmlClearResult()" style="width: 20%; height: 50px; margin-bottom: 5px">Clear Result</button>
+        
+        <b>Result:</b><br>
+        <textarea id="htmlResult" style="width:100%; height:252px"></textarea><br>
+    </div>
+
+<script>
+    function openTab(evt, tabName) {
+        var i, tabcontent, tablinks;
+        tabcontent = document.getElementsByClassName("tabcontent");
+        for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].style.display = "none";
+        }
+        tablinks = document.getElementsByClassName("tablinks");
+        for (i = 0; i < tablinks.length; i++) {
+            tablinks[i].className = tablinks[i].className.replace(" active", "");
+        }
+        document.getElementById(tabName).style.display = "block";
+        evt.currentTarget.className += " active";
+    }
+    // Get the element with id="defaultOpen" and click on it
+    document.getElementById("defaultOpen").click();
+    
+    var result = document.getElementById("result").value;
+    //var sentence = /["']?[A-Z][^.?!]+((?![.?!]['"]?\s["']?[A-Z][^.?!]).)+[.?!'"]+/g
+    const sentence = /([^\.!\?]+[\.!\?]+)|([^\.!\?]+$)/g;
+    const pronoun = /(Mr|Ms|Mrs|Dr|Capt|Col|St|Sr|Srta|Sra)\./;
+    const abbr = /([A-Z]\.)+/;
+    const bothquotes = /^(["'’”] ?["'“‘])/m;
+    const endquote = /^(["'’”] ?)/m;
+    const startprice = /([0-9]+\.)/g;
+    const endprice = /^( ?[0-9]{2}( |\.))/m;
+    const spaceperiod = /( +\.( ?)+(\r\n|\n|\r))/g;
+    
+    function format() {
+        result = document.getElementById("result").value;
+        
+        //Create arrays
+        var mainArray = new Array();
+        var bodyLArray = new Array();
+        var bodyRArray = new Array();
+        
+        //Get values
+        var pg = document.getElementById("pageNum").value;
+        var h1L = document.getElementById("head1L").value;
+        var h2L = document.getElementById("head2L").value;
+        var bL = document.getElementById("bodyL").value;
+        
+        var h1R = document.getElementById("head1R").value;
+        var h2R = document.getElementById("head2R").value;
+        var bR = document.getElementById("bodyR").value;
+        
+        //// LEFT PAGE
+        //Push pg# and headings to main arrays
+        mainArray.push("###" + pg + "\n");
+        if (h1L.length != 0) { mainArray.push(h1L + "\n\n"); }
+        if (h2L.length != 0) { mainArray.push(h2L + "\n\n"); }
+        //if (b.length != 0) { array.push(b + "\n\n"); }
+        
+        bL = bL.replace(/\s+/g,' ').trim(); //Remove extra whitespace from body
+        
+        //Find sentences based on regex and push to array
+        bodyLArray = bL.match(sentence);
+        if (bodyLArray != null) { 
+            //Trim text
+            for (var i = 0; i < bodyLArray.length; i++) {
+                bodyLArray[i] = bodyLArray[i].trim()+"\n";
+            }
+            bodyLArray.push("\n");
+            
+            //Add to main array
+            mainArray = mainArray.concat(bodyLArray); 
+        }
+        
+        //// RIGHT PAGE 
+        if (h1R.length != 0) { mainArray.push("---" + h1R + "\n\n"); }
+        if (h2R.length != 0 && h1R.length == 0) { mainArray.push("---" + h2R + "\n\n"); }
+        else if (h2R.length != 0) { mainArray.push(h2R + "\n\n"); }
+        
+        bR = bR.replace(/\s+/g,' ').trim();
+        bodyRArray = bR.match(/([^\.!\?]+[\.!\?]+)|([^\.!\?]+$)/g);
+        if (bodyRArray != null) { 
+            if (h1R.length == 0 && h2R.length == 0) {
+                bodyRArray[0] = "---"+bodyRArray[0];
+            }
+            //Trim text
+            for (var i = 0; i < bodyRArray.length; i++) {
+                bodyRArray[i] = bodyRArray[i].trim()+"\n";
+            }
+            //Add to main array
+            mainArray = mainArray.concat(bodyRArray); 
+        }
+        
+        if (h1R.length != 0 || h2R.length != 0 || bR != 0) {
+            mainArray.push("\n");
+        } 
+        
+        ////MAIN ARRAY CORRECTION////
+        //Check main array for missing quotations and reorder array
+        for (var i = 0; i < mainArray.length; i++) {
+            if (mainArray[i].search(bothquotes) != -1) {
+                var e = mainArray[i].substr(0,1); //store element
+                mainArray[i-1] = mainArray[i-1].replace(/(\r\n|\n|\r)/, ""); //remove return
+                mainArray[i-1] += (e+"\n"); //add quote to end of previous element
+                mainArray[i] = mainArray[i].substr(1,mainArray[i].length);
+                break;
+            }
+            else if (mainArray[i].search(endquote) != -1) {
+                var e = mainArray[i];
+                mainArray[i-1] = mainArray[i-1].replace(/(\r\n|\n|\r)/, ""); //remove return
+                mainArray[i-1] += e;
+                mainArray.splice(i, 1); //remove element
+            }
+        }
+        //Check for pronouns
+        for (var i = 0; i < mainArray.length; i++) {
+            if (mainArray[i].search(pronoun) != -1) {
+                var e = mainArray[i+1]; 
+                mainArray[i] = mainArray[i].replace(/(\r\n|\n|\r)/, ""); //remove return
+                mainArray[i] += e; //add next element to current element
+                mainArray.splice(i+1, 1); //remove next element
+            }
+        }
+        //Check for abbreviations
+        for (var i = 0; i < mainArray.length; i++) {
+                if (mainArray[i].search(abbr) != -1) {
+                    var e = mainArray[i+1]; 
+                    mainArray[i] = mainArray[i].replace(/(\r\n|\n|\r)/, "");//remove return
+                    mainArray[i] += e+" "; //add next element to current element
+                    mainArray.splice(i+1, 1); //remove next element
+            }
+        }
+        
+        //Check for price
+        for (var i = 0; i < mainArray.length; i++) {
+            if (mainArray[i].search(startprice) != -1 && mainArray[i+1].search(endprice) != -1) {
+                var e = mainArray[i+1]; 
+                mainArray[i] = mainArray[i].replace(/(\r\n|\n|\r)/, ""); //remove return
+                mainArray[i] += e; //add next element to current element
+                mainArray.splice(i+1, 1); //remove next element
+            }
+        }
+        
+        //Check for "_._" at end of sentence
+        for (var i = 0; i < mainArray.length; i++) {
+            mainArray[i] = mainArray[i].replace(spaceperiod, ".\n");
+        }
+        
+        //Remove space from beginning of sentence
+        for (var i = 0; i < mainArray.length; i++) {
+            if (mainArray[i].search(/^( +)/m) != -1) {
+                mainArray[i] = mainArray[i].replace(/^( +)/m, ""); 
+            }
+        }
+        
+        //Update Textbox
+        for (var i = 0; i < mainArray.length; i++) {
+            result += mainArray[i];
+        }
+        document.getElementById("result").value = result;
+    }
+    
+    function incPageNum() {
+        var pg = parseInt(document.getElementById("pageNum").value);
+        pg += 2;
+        document.getElementById("pageNum").value = pg;
+    }
+    
+    function decPageNum() {
+        var pg = parseInt(document.getElementById("pageNum").value);
+        pg -= 2;
+        document.getElementById("pageNum").value = pg;
+    }
+    
+    function clearText() { 
+        document.getElementById("head1L").value = ""; 
+        document.getElementById("head2L").value = ""; 
+        document.getElementById("bodyL").value = ""; 
+        
+        document.getElementById("head1R").value = ""; 
+        document.getElementById("head2R").value = ""; 
+        document.getElementById("bodyR").value = ""; 
+        
+        incPageNum();
+    }
+    
+    function clearResult() {
+        var r = confirm("RESET ALL FIELDS\nAre you sure?");
+        if (r == true) {
+            result = ""; //Reset result
+            document.getElementById("result").value = result;
+            mainArray = new Array(); //Reset array
+            
+            //Reset other fields
+            document.getElementById("head1L").value = ""; 
+            document.getElementById("head2L").value = ""; 
+            document.getElementById("bodyL").value = "";
+            document.getElementById("head1R").value = ""; 
+            document.getElementById("head2R").value = ""; 
+            document.getElementById("bodyR").value = ""; 
+            document.getElementById("pageNum").value = "5";
+        }
+    }
+    
+    function copyResult() {
+        var copyText = document.getElementById("result");
+        copyText.select();
+        document.execCommand("copy");
+    }
+    
+    
+    
+    //// HTML TAB ////
+    
+    htmlResult = document.getElementById("htmlResult").value;
+    
+    function htmlFormat() {
+        const htmlHeading = "<p id=\"text\" class=\"english\">\n<span style=\"text-align:Left; display:block; font-size:4.0em; color: #ffffff;\">";
+        const htmlFooter = "<\/span>. </\span>\n<\/p>"
+              
+        htmlResult = document.getElementById("htmlResult").value;
+        
+        htmlBody = document.getElementById("htmlBody").value;
+        
+        htmlBody = htmlBody.replace(/(<p id=\"text\" class=\"english\">)/g, htmlHeading);
+        htmlBody = htmlBody.replace(/(<\/span>). ?\n(<\/p>)/gm, htmlFooter);
+    
+        htmlResult = htmlBody;
+        document.getElementById("htmlResult").value = htmlResult;
+            
+    }
+    
+    function htmlClearText() { 
+        document.getElementById("htmlBody").value = ""; 
+    }
+    
+    function htmlCopyResult() {
+        var copyText = document.getElementById("htmlResult");
+        copyText.select();
+        document.execCommand("copy");
+    }
+    
+    function htmlClearResult() {
+        var r = confirm("CLEAR RESULT\nAre you sure?");
+        if (r == true) {
+            htmlResult = ""; //Reset result
+            document.getElementById("htmlResult").value = htmlResult;
+        }
+    }
+      
+</script> 
+</body>
+</html>
