@@ -7,7 +7,6 @@
         * {
             box-sizing: border-box;
         }
-
         /* Create two equal columns that floats next to each other */
         .columnleft {
             float: left;
@@ -19,7 +18,6 @@
             float: right;
             width: 50%;
         }
-
         /* Clear floats after the columns */
         .row:after {
             content: "";
@@ -33,7 +31,6 @@
             border: 1px solid #ccc;
             background-color: #f1f1f1;
         }
-
         /* Style the buttons inside the tab */
         .tab button {
             background-color: inherit;
@@ -45,23 +42,46 @@
             transition: 0.3s;
             font-size: 17px;
         }
-
         /* Change background color of buttons on hover */
         .tab button:hover {
             background-color: #ddd;
         }
-
         /* Create an active/current tablink class */
         .tab button.active {
             background-color: #ccc;
         }
-
         /* Style the tab content */
         .tabcontent {
             display: none;
             padding: 6px 12px;
             border: 1px solid #ccc;
             border-top: none;
+        }
+        
+        /* HTML Modal (background) */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1; /* Sit on top */
+            padding-top: 10%; /* Location of the box */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgb(0,0,0); /* Fallback color */
+            background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+        }
+
+        /* Modal Content */
+        .modal-content {
+            background-color: #fefefe;
+            margin: auto;
+            padding-left: 25px;
+            padding-bottom: 25px;
+            border: 1px solid #888;
+            line-height: 25px;
+            width: 80%;
         }
     </style>
 </head>
@@ -70,8 +90,8 @@
     <h2>Text Formatter</h2>
     
     <div class="tab">
-        <button class="tablinks" onclick="openTab(event, 'Transcript')" id="defaultOpen">Transcript</button>
-        <button class="tablinks" onclick="openTab(event, 'HTML')">HTML</button>
+        <button class="tablinks" onclick="openTab(event, 'Transcript')">Transcript</button> <!-- Changed Default -->
+        <button class="tablinks" onclick="openTab(event, 'HTML')" id="defaultOpen">HTML</button>
     </div>
     
     <!-- Transcript Tab -->
@@ -112,11 +132,88 @@
     <textarea id="result" style="width:100%; height:240px"></textarea><br>
     </div>
     
+    
+    
+    
+    
     <!-- HTML Tab -->
     <div id="HTML" class="tabcontent">
-        <b>HTML:</b><br>
-        <textarea id="htmlBody" style="width:100%; height:200px"></textarea><br>
-        
+        <div class="row">  
+            <!-- Left Column -->
+            <div class="columnleft">
+                <b>HTML:</b><br>
+                <textarea id="htmlBody" style="width:100%; height:200px"></textarea><br>
+            </div>
+
+            <!-- Right Column -->
+            <div class="columnright" style="padding-top:50px; padding-bottom:50px">
+                <b>Add tags for:</b><br>
+                <input id="paraIndentCheckbox" type="checkbox" checked="checked"><label for="paraIndentCheckbox">Paragraph Indentation</label><br>
+                <input id="head1Checkbox" type="checkbox" ><label for="head1Checkbox">Heading 1</label><br>
+                <input id="head2Checkbox" type="checkbox"><label for="head2Checkbox">Heading 2</label><br>
+                <input id="padCheckbox" type="checkbox"><label for="padCheckbox">Padding</label><br>
+                <button id="customizeTags" style="margin-top: 5px">Customize Tags</button>
+                <!-- Customize Tags Modal -->
+                <div id="tagModal" class="modal">
+                <div class="modal-content">
+                    <h2>Customize Tags</h2>
+                    
+                    <u><b>Paragraph Indentation</b></u><br>
+                    <!-- Paragraph Indentation -->
+                    <!--English word number(s): <input id="wordNums" type="text" placeholder="e.g. 4, 23, 51"><br>
+                    Spanish word number(s): <input id="wordNums" type="text" value="0"><br>-->
+                    Indent Size: <input id="indentSize" type="number" value="1.5" step="0.1" style="width:45px"; oninput="updateCode()">em<br>
+                    Body Text Color: <input id="bodyTextColor" type="text" value="#000000" maxlength="7" size="7" oninput="updateCode()"><br>
+                    Code: <textarea id="indentCode" type="text" style="width:96%; height:60px" readonly></textarea><br>
+                    
+                    <!-- Heading 1 -->
+                    <u><b>Heading 1</b></u><br>
+                    Font Size:
+                    <select id="h1FontSize" onchange="updateCode()">
+                        <option value="Small">Small</option>
+                        <option value="Medium" selected="selected">Medium</option>
+                        <option value="Large">Large</option>
+                    </select><br>
+                    Text Align: 
+                    <select id="h1TextAlign" onchange="updateCode()">
+                        <option value="left" selected="selected">Left</option>
+                        <option value="center">Center</option>
+                        <option value="right">Right</option>
+                    </select><br>
+                    Text Color: <input id="h1TextColor" type="text" value="#000000" maxlength="7" size="7" oninput="updateCode()"><br>
+                    <!-- Text Shadow: <input type="radio" name="h1TextShadow" onclick="updateCode(); document.getElementById('h1TextShadowColor').disabled=true;" value="off" checked="checked">
+                    Off <input type="radio" name="h1TextShadow" onclick="updateCode(); document.getElementById('h1TextShadowColor').disabled=false;" value="on">
+                    On <input id="h1TextShadowColor" type="text" value="#000000" maxlength="7" size="7" oninput="updateCode()" disabled><br> -->
+                    Code:<br><textarea id="h1Code" type="text" style="width:96%; height:60px" readonly></textarea><br>
+                    
+                    <!-- Heading 2 -->
+                    <u><b>Heading 2</b></u><br>
+                    Font Size:
+                    <select id="h2FontSize" onchange="updateCode()">
+                        <option value="Small">Small</option>
+                        <option value="Medium" selected="selected">Medium</option>
+                        <option value="Large">Large</option>
+                    </select><br>
+                    Text Align: 
+                    <select id="h2TextAlign" onchange="updateCode()">
+                        <option value="left" selected="selected">Left</option>
+                        <option value="center">Center</option>
+                        <option value="right">Right</option>
+                    </select><br>
+                    Text Color: <input id="h2TextColor" type="text" value="#000000" maxlength="7" size="7" oninput="updateCode()"><br>
+                    Code:<br><textarea id="h2Code" type="text" style="width:96%; height:60px" readonly></textarea><br>
+                    <u><b>Padding</b></u><br>
+                    Heading: <input id="headPad" type="number" value="0.5" step="0.1" style="width:45px"; oninput="updateCode()">em<br>
+                    
+                    
+                    
+                    
+                </div>
+                </div>
+                
+            </div>
+            
+    </div>        
         <button onclick="htmlFormat()" style="width: 37%; height: 50px; margin-bottom: 5px">Format</button>
         <button onclick="htmlClearText()" style="width: 20%; height: 50px; margin-bottom: 5px">Clear Input</button>
         <button onclick="htmlCopyResult()" style="width: 20%; height: 50px; margin-bottom: 5px">Copy Result</button>
@@ -125,7 +222,6 @@
         <b>Result:</b><br>
         <textarea id="htmlResult" style="width:100%; height:252px"></textarea><br>
     </div>
-</body>
 
 <script>
     function openTab(evt, tabName) {
@@ -141,7 +237,6 @@
         document.getElementById(tabName).style.display = "block";
         evt.currentTarget.className += " active";
     }
-
     // Get the element with id="defaultOpen" and click on it
     document.getElementById("defaultOpen").click();
     
@@ -185,7 +280,6 @@
         
         //Find sentences based on regex and push to array
         bodyLArray = bL.match(sentence);
-
         if (bodyLArray != null) { 
             //Trim text
             for (var i = 0; i < bodyLArray.length; i++) {
@@ -335,22 +429,132 @@
     
     
     
+    
+    
+    
+    
     //// HTML TAB ////
+    
+    //Set default tags
+    var htmlHead1, htmlHead2, htmlHeadPad, htmlHeadAfter1, htmlIndent, htmlIndentFirst, htmlFooter;
+    
+    function setTags() {
+        htmlHead1 = "<p id=\"text\" class=\"english\">\n<span style=\"text-align:"+document.getElementById("h1TextAlign").value.toString()+"; display:block; font-size:var(--head"+document.getElementById("h1FontSize").value.toString()+"); color:"+document.getElementById("h1TextColor").value.toString()+";\">";
+        
+        htmlHead2 = "<p id=\"text\" class=\"english\">\n<span style=\"text-align:"+document.getElementById("h2TextAlign").value.toString()+"; display:block; font-size:var(--head"+document.getElementById("h2FontSize").value.toString()+"); color:"+document.getElementById("h2TextColor").value.toString()+";\">";
+        
+        htmlHead2After1 = "<\/span><\/span>\n\n"+"<span style=\"text-align:"+document.getElementById("h2TextAlign").value.toString()+"; display:block; font-size:var(--head"+document.getElementById("h2FontSize").value.toString()+"); color:"+document.getElementById("h2TextColor").value.toString()+";\">\n";
+
+        htmlHeadPad = "</span>\n<span style=\"display:block; padding-bottom:"+document.getElementById("headPad").value.toString()+"em;\"></span>";
+        
+        htmlIndent = "<span style=\"text-indent:"+document.getElementById("indentSize").value.toString()+"em; display:block; color:"+document.getElementById("bodyTextColor").value.toString()+";\">";
+        
+        htmlIndentFirst = "<p id=\"text\" class=\"english\">\n"+htmlIndent;
+        
+        htmlFooter = "<\/span>\n<\/p>";
+    }
+    setTags();
     
     htmlResult = document.getElementById("htmlResult").value;
     
+    
+    function nthIndex(str, pat, n){
+        var L= str.length, i= -1;
+        while(n-- && i++<L){
+            i= str.indexOf(pat, i);
+            if (i < 0) break;
+        }
+        return i;
+    }
+
+    String.prototype.insert = function (index, string) {
+      if (index > 0)
+       return this.substring(0, index) + string + this.substring(index, this.length);
+
+      return string + this;
+    };
+    
+    //Format HTML
     function htmlFormat() {
-        const htmlHeading = "<p id=\"text\" class=\"english\">\n<span style=\"text-align:Left; display:block; font-size:4.0em; color: #ffffff;\">";
-        const htmlFooter = "<\/span>. </\span>\n<\/p>"
-              
-        htmlResult = document.getElementById("htmlResult").value;
+        setTags();
         
+        htmlResult = document.getElementById("htmlResult").value;
         htmlBody = document.getElementById("htmlBody").value;
         
-        htmlBody = htmlBody.replace(/(<p id=\"text\" class=\"english\">)/g, htmlHeading);
-        htmlBody = htmlBody.replace(/(<\/span>). ?\n(<\/p>)/gm, htmlFooter);
-    
-        htmlResult = htmlBody;
+        //Add Header 1 & 2 if both checked
+        if (document.getElementById("head1Checkbox").checked && document.getElementById("head2Checkbox").checked) {
+            htmlBody = htmlBody.replace(/(<p id=\"text\" class=\"english\">)/, htmlHead1); //add head 1
+            
+            if (document.getElementById("padCheckbox").checked) {
+                htmlBody = htmlBody.replace(/(<\/span>.{0,4}\n<span style=\"display:block; padding-bottom: \.5em;\"><\/span>)\n\n/, htmlHead2After1); //add head2 after 1
+                
+                var index = nthIndex(htmlBody, "\n\n", 2);   //add padding after second \n\n
+                htmlBody = htmlBody.insert(index, htmlHeadPad);
+                
+            }
+            else {
+                htmlBody = htmlBody.replace(/(<\/span>.{0,4}\n<span style=\"display:block; padding-bottom: \.5em;\"><\/span>)\n\n/, htmlHead2After1); //add head2 after 1 without padding
+                
+                var index = nthIndex(htmlBody, "\n\n", 2);   //add closing span tag after second \n\n
+                htmlBody = htmlBody.insert(index, "</span>");
+            }
+        }
+                                        
+        //Add Header 1
+        if (document.getElementById("head1Checkbox").checked && !document.getElementById("head2Checkbox").checked) {
+            htmlBody = htmlBody.replace(/(<p id=\"text\" class=\"english\">)/, htmlHead1);
+            
+            if (document.getElementById("padCheckbox").checked) {
+                htmlBody = htmlBody.replace(/(<\/span>.{0,4}\n<span style=\"display:block; padding-bottom: \.5em;\"><\/span>)\n\n/, "</span>"+htmlHeadPad+"\n\n"); 
+            }
+            else {
+                htmlBody = htmlBody.replace(/(<\/span>.{0,4}\n<span style=\"display:block; padding-bottom: \.5em;\"><\/span>)\n\n/, "</span></span>\n\n");
+            }
+        }
+        
+        //Add Header 2
+        if (document.getElementById("head2Checkbox").checked && !document.getElementById("head1Checkbox").checked) {
+            htmlBody = htmlBody.replace(/(<p id=\"text\" class=\"english\">)/, htmlHead2);
+            
+            if (document.getElementById("padCheckbox").checked) {
+                htmlBody = htmlBody.replace(/(<\/span>\n<span style=\"display:block; padding-bottom: \.5em;\"><\/span>)\n\n/, "</span>"+htmlHeadPad+"\n\n");
+            }
+            else {
+                htmlBody = htmlBody.replace(/(<\/span>\n<span style=\"display:block; padding-bottom: \.5em;\"><\/span>)\n\n/, "</span></span>\n\n");
+            }
+        }
+        
+        //Add Paragraph Indentation
+        if (document.getElementById("paraIndentCheckbox").checked && document.getElementById("head1Checkbox").checked && document.getElementById("head2Checkbox").checked) {
+            var index = nthIndex(htmlBody, "\n\n", 2);   //add indent after second occurence of \n\n
+            htmlBody = htmlBody.insert(index, "\n\n"+htmlIndent);
+        }
+        if (document.getElementById("paraIndentCheckbox").checked && document.getElementById("head1Checkbox").checked && !document.getElementById("head2Checkbox").checked) {
+            var index = nthIndex(htmlBody, "\n\n", 1);   //add indent after first occurence of \n\n
+            htmlBody = htmlBody.insert(index, "\n\n"+htmlIndent);
+        }
+        if (document.getElementById("paraIndentCheckbox").checked && document.getElementById("head2Checkbox").checked && !document.getElementById("head1Checkbox").checked) {
+            var index = nthIndex(htmlBody, "\n\n", 1);   //add indent after first occurence of \n\n
+            htmlBody = htmlBody.insert(index, "\n\n"+htmlIndent);
+        }
+        if (document.getElementById("paraIndentCheckbox").checked && !document.getElementById("head1Checkbox").checked && !document.getElementById("head2Checkbox").checked) {
+            htmlBody = htmlBody.replace(/(<p id=\"text\" class=\"english\">)/, htmlIndentFirst);
+        }
+        
+        //Add closing span tag for footer only if indent is checked
+        if (document.getElementById("paraIndentCheckbox").checked) {
+            htmlBody = htmlBody.replace(/\n(<\/p>)/, htmlFooter);  //add footer
+        }
+        
+        //Add padding if header 1 & 2 are not checked and delete padding if not
+        if (document.getElementById("padCheckbox").checked && !document.getElementById("head1Checkbox").checked && !document.getElementById("head2Checkbox").checked) {
+            htmlBody = htmlBody.replace(/(<\/span>.{0,4}\n<span style=\"display:block; padding-bottom: \.5em;\"><\/span>)\n\n/, htmlHeadPad+"\n\n"); 
+        }
+        if (!document.getElementById("padCheckbox").checked && !document.getElementById("head1Checkbox").checked && !document.getElementById("head2Checkbox").checked) {
+            htmlBody = htmlBody.replace(/(<\/span>.{0,4}\n<span style=\"display:block; padding-bottom: \.5em;\"><\/span>)\n\n/, "</span>\n\n"); 
+        }
+        
+        htmlResult = htmlBody;    //put edited body in result box
         document.getElementById("htmlResult").value = htmlResult;
             
     }
@@ -372,6 +576,38 @@
             document.getElementById("htmlResult").value = htmlResult;
         }
     }
+    
+    // Get the modal
+    var modal = document.getElementById("tagModal");
+
+    // Get the button that opens the modal
+    var btn = document.getElementById("customizeTags");
+
+    // When the user clicks the button, open the modal 
+    btn.onclick = function() {
+        modal.style.display = "block";
+    }
+
+    // When the user clicks anywhere outside of the modal, close it
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+    
+    //Display HTML Tags
+    function updateCode() {
+        setTags();
+        
+        document.getElementById("indentCode").value = htmlIndent+"\n...\n<\/span>";
+        
+        document.getElementById("h1Code").value = htmlHead1+"\n...\n"+htmlHeadPad;
+        
+        document.getElementById("h2Code").value = htmlHead2+"\n...\n"+htmlHeadPad;
+    }
+    
+    updateCode();
       
 </script> 
+</body>
 </html>
