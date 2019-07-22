@@ -148,7 +148,8 @@
             <!-- Right Column -->
             <div class="columnright" style="padding-top:50px; padding-bottom:50px">
                 <b>Add tags for:</b><br>
-                <input id="paraIndentCheckbox" type="checkbox" checked="checked"><label for="paraIndentCheckbox">Paragraph Indentation</label><br>
+                <input id="fontSizeCheckbox" type="checkbox" onchange="disableBoxes()"><label for="fontSizeCheckbox">Font Size Only</label><br>
+                <input id="paraIndentCheckbox" type="checkbox"><label for="paraIndentCheckbox">Paragraph Indentation</label><br>
                 <input id="head1Checkbox" type="checkbox" ><label for="head1Checkbox">Heading 1</label><br>
                 <input id="head2Checkbox" type="checkbox"><label for="head2Checkbox">Heading 2</label><br>
                 <input id="padCheckbox" type="checkbox"><label for="padCheckbox">Padding</label><br>
@@ -436,9 +437,12 @@
     //// HTML TAB ////
     
     //Set default tags
-    var htmlHead1, htmlHead2, htmlHeadPad, htmlHeadAfter1, htmlIndent, htmlIndentFirst, htmlFooter;
+    var htmlHead1, htmlHead2, htmlHeadPad, htmlHeadAfter1, htmlIndent, htmlIndentFirst, htmlFooter, htmlFontSizeOnly;
     
     function setTags() {
+        
+        htmlFontSizeOnly = "font-size:var(--head"+document.getElementById("h1FontSize").value.toString()+");";
+        
         htmlHead1 = "<p id=\"text\" class=\"english\">\n<span style=\"text-align:"+document.getElementById("h1TextAlign").value.toString()+"; display:block; font-size:var(--head"+document.getElementById("h1FontSize").value.toString()+"); color:"+document.getElementById("h1TextColor").value.toString()+";\">";
         
         htmlHead2 = "<p id=\"text\" class=\"english\">\n<span style=\"text-align:"+document.getElementById("h2TextAlign").value.toString()+"; display:block; font-size:var(--head"+document.getElementById("h2FontSize").value.toString()+"); color:"+document.getElementById("h2TextColor").value.toString()+";\">";
@@ -480,7 +484,7 @@
         
         htmlResult = document.getElementById("htmlResult").value;
         htmlBody = document.getElementById("htmlBody").value;
-        
+    
         //Add Header 1 & 2 if both checked
         if (document.getElementById("head1Checkbox").checked && document.getElementById("head2Checkbox").checked) {
             htmlBody = htmlBody.replace(/(<p id=\"text\" class=\"english\">)/, htmlHead1); //add head 1
@@ -550,13 +554,36 @@
         if (document.getElementById("padCheckbox").checked && !document.getElementById("head1Checkbox").checked && !document.getElementById("head2Checkbox").checked) {
             htmlBody = htmlBody.replace(/(<\/span>.{0,4}\n<span style=\"display:block; padding-bottom: \.5em;\"><\/span>)\n\n/, htmlHeadPad+"\n\n"); 
         }
-        if (!document.getElementById("padCheckbox").checked && !document.getElementById("head1Checkbox").checked && !document.getElementById("head2Checkbox").checked) {
-            htmlBody = htmlBody.replace(/(<\/span>.{0,4}\n<span style=\"display:block; padding-bottom: \.5em;\"><\/span>)\n\n/, "</span>\n\n"); 
+        
+        //Replaces every font size with header 1 font size
+        if (document.getElementById("fontSizeCheckbox").checked) {
+            htmlBody = htmlBody.replace(/(font-size:.*?;)/g, htmlFontSizeOnly);
         }
         
         htmlResult = htmlBody;    //put edited body in result box
         document.getElementById("htmlResult").value = htmlResult;
             
+    }
+    
+    function disableBoxes() {
+        if (document.getElementById("fontSizeCheckbox").checked) {
+            
+            document.getElementById("paraIndentCheckbox").checked = false;
+            document.getElementById("head1Checkbox").checked = false;
+            document.getElementById("head2Checkbox").checked = false;
+            document.getElementById("padCheckbox").checked = false;
+            
+            document.getElementById("paraIndentCheckbox").disabled = true;
+            document.getElementById("head1Checkbox").disabled = true;
+            document.getElementById("head2Checkbox").disabled = true;
+            document.getElementById("padCheckbox").disabled = true;
+        }
+        else {
+            document.getElementById("paraIndentCheckbox").disabled = false;
+            document.getElementById("head1Checkbox").disabled = false;
+            document.getElementById("head2Checkbox").disabled = false;
+            document.getElementById("padCheckbox").disabled = false;
+        }
     }
     
     function htmlClearText() { 
