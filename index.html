@@ -63,7 +63,8 @@
             display: none; /* Hidden by default */
             position: fixed; /* Stay in place */
             z-index: 1; /* Sit on top */
-            padding-top: 10%; /* Location of the box */
+            padding-top: 3%; /* Location of the box */
+            padding-bottom: 3%;
             left: 0;
             top: 0;
             width: 100%; /* Full width */
@@ -149,7 +150,8 @@
                 <b>Add tags for:</b><br>
                 <input id="head1Checkbox" type="checkbox" onchange=highlightBoxes()><label for="head1Checkbox">Heading 1</label><br>
                 <input id="head2Checkbox" type="checkbox" onchange=highlightBoxes()><label for="head2Checkbox">Heading 2</label><br>
-                <input id="padCheckbox" type="checkbox" onchange=highlightBoxes()><label for="padCheckbox">Padding</label><br>
+                <input id="headPadCheckbox" type="checkbox" checked="true" onchange=highlightBoxes()><label for="headPadCheckbox">Heading Padding</label><br>
+                <input id="paraPadCheckbox" type="checkbox" checked="true" onchange=highlightBoxes()><label for="paraPadCheckbox">Paragraph Padding</label><br>
                 <input id="paraIndentCheckbox" type="checkbox" checked="true" onchange=highlightBoxes()><label for="paraIndentCheckbox">Paragraph Indents</label><br>
                 <button id="customizeTags" style="margin-top: 5px">Customize Tags</button>
                 
@@ -160,7 +162,7 @@
                     <!-- Heading 1 -->
                     <b>Heading 1</b><br>
                     <div style="display:flex; align-items:center; justify-content:left;">
-                    <textarea id="h1Code" type="text" style="width:42%; height:100px; resize: none; border:solid 1px grey;"></textarea>
+                    <textarea id="h1Code" type="text" style="width:42%; height:100px; resize: none; border:solid 1px black;"></textarea>
                         
                     <button id="switchH1" onclick="switchField('H1');" style="min-width:5%; height:40px; top:10px; margin-right:10px; margin-left:10px;">&#8596;</button>
                         
@@ -170,31 +172,43 @@
                     <!-- Heading 2 -->
                     <b>Heading 2</b><br>
                     <div style="display:flex; align-items:center; justify-content:left;">
-                    <textarea id="h2Code" type="text" style="width:42%; height:100px; resize: none; border:solid 1px grey;"></textarea>
+                    <textarea id="h2Code" type="text" style="width:42%; height:100px; resize: none; border:solid 1px black;"></textarea>
                         
                     <button id="switchH2" onclick="switchField('H2');" style="min-width:5%; height:40px; top:10px; margin-right:10px; margin-left:10px;">&#8596;</button>
                         
                     <textarea id="h2CodeOther" type="text" style="width:42%; height:100px; resize: none;"></textarea>
                     </div>
                     <br>
-                    <!-- Padding -->
-                    <b>Padding</b><br>
+                    <!-- Heading Padding -->
+                    <b>Heading Padding</b><br>
                     <div style="display:flex; align-items:center; justify-content:left;">
-                    <textarea id="padCode" type="text" style="width:42%; height:100px; resize: none; border:solid 1px grey;"></textarea>
+                    <textarea id="headPadCode" type="text" style="width:42%; height:50px; resize: none; border:solid 3px black;"></textarea>
                     
-                    <button id="switchPad" onclick="switchField('PAD');" style="min-width:5%; height:40px; top:10px; margin-right:10px; margin-left:10px;">&#8596;</button>
+                    <button id="switchHeadPad" onclick="switchField('HEADPAD');" style="min-width:5%; height:40px; top:10px; margin-right:10px; margin-left:10px;">&#8596;</button>
                     
-                    <textarea id="padCodeOther" type="text" style="width:42%; height:100px; resize: none;"></textarea>
+                    <textarea id="headPadCodeOther" type="text" style="width:42%; height:50px; resize: none;"></textarea>
                     </div>
                     <br>
+                    
+                    <!-- Body Padding -->
+                    <b>Body Padding</b><br>
+                    <div style="display:flex; align-items:center; justify-content:left;">
+                    <textarea id="paraPadCode" type="text" style="width:42%; height:50px; resize: none; border:solid 3px black;"></textarea>
+                    
+                    <button id="switchparaPad" onclick="switchField('PARAPAD');" style="min-width:5%; height:40px; top:10px; margin-right:10px; margin-left:10px;">&#8596;</button>
+                    
+                    <textarea id="paraPadCodeOther" type="text" style="width:42%; height:50px; resize: none;"></textarea>
+                    </div>
+                    <br>
+                    
                     <!-- Paragraph Indents -->
                     <b>Paragraph Indents</b><br>
                     <div style="display:flex; align-items:center; justify-content:left;">
-                    <textarea id="indentCode" type="text" style="width:42%; height:100px; resize: none; border:solid 3px grey;"></textarea>
+                    <textarea id="indentCode" type="text" style="width:42%; height:50px; resize: none; border:solid 3px black;"></textarea>
                     
                     <button id="switchH1" onclick="switchField('INDENT');" style="min-width:5%; height:40px; top:10px; margin-right:10px; margin-left:10px;">&#8596;</button>
                     
-                    <textarea id="indentCodeOther" type="text" style="width:42%; height:100px; resize: none;"></textarea>
+                    <textarea id="indentCodeOther" type="text" style="width:42%; height:50px; resize: none;"></textarea>
                     </div>
                     
                 </div>
@@ -425,13 +439,14 @@
     //// HTML TAB ////
     
     //Set default tags
-    var htmlHead1, htmlHead2, htmlPad, htmlIndent, htmlIndentFirst, htmlFooter;
+    var htmlHead1, htmlHead2, htmlHeadPad, htmlParaPad, htmlIndent, htmlIndentFirst, htmlFooter;
     
     //Set default textarea values
     document.getElementById("h1Code").value = "<span style=\"text-align:left; display:block; font-size:var(--headMedium); text-shadow:3px 3px 10px #7C7E7E; color: #BA1319;\">";
     document.getElementById("h2Code").value = "<span style=\"text-align:left; display:block; font-size:var(--headSmall); text-shadow:2px 2px 8px #7C7E7E; color: #00548F;\">";
-    document.getElementById("padCode").value = "<span style=\"display:block; padding-bottom: .5em;\"><\/span>";
-    document.getElementById("indentCode").value = "<span style=\"text-indent:1.5em; display:block; color: #000000;\">";
+    document.getElementById("headPadCode").value = "<span style=\"display:block; padding-bottom: 1.0em;\"><\/span>";
+    document.getElementById("paraPadCode").value = "<span style=\"display:block; padding-bottom: 0.5em;\"><\/span>";
+    document.getElementById("indentCode").value = "<span style=\"text-indent:1.5em; display:block; color: #000;\">";
     
     function setTags() {
         
@@ -439,7 +454,9 @@
         
         htmlHead2 = document.getElementById("h2Code").value;
     
-        htmlPad = document.getElementById("padCode").value;
+        htmlHeadPad = document.getElementById("headPadCode").value;
+        
+        htmlParaPad = document.getElementById("paraPadCode").value;
         
         htmlIndent = document.getElementById("indentCode").value;
         
@@ -482,10 +499,10 @@
             var temp = htmlBody[i].match(/(<p id=\"text\" class=\".*?\">)/);
             htmlBody[i] = htmlBody[i].replace(/(<p id=\"text\" class=\".*?\">)/, temp[0]+"\n"+htmlHead1); //add head 1
             
-            if (document.getElementById("padCheckbox").checked) {
+            if (document.getElementById("headPadCheckbox").checked) {
                 htmlBody[i] = htmlBody[i].replace(/(<\/span>.{0,4}\n\n)/, "<\/span><\/span>\n\n"+htmlHead2+"\n");
                 index = nthIndex(htmlBody[i], "\n\n", 2); //add closing span tag after second \n\n
-                htmlBody[i] = htmlBody[i].insert(index, "</span>\n"+htmlPad);
+                htmlBody[i] = htmlBody[i].insert(index, "</span>\n"+htmlHeadPad);
             }
             else {
                 htmlBody[i] = htmlBody[i].replace(/(<\/span>.{0,4}\n\n)/, "<\/span><\/span>\n\n"+htmlHead2+"\n");
@@ -500,9 +517,9 @@
             var temp = htmlBody[i].match(/(<p id=\"text\" class=\".*?\">)/);
             htmlBody[i] = htmlBody[i].replace(/(<p id=\"text\" class=\".*?\">)/, temp[0]+"\n"+htmlHead1); //add head 1
             
-            if (document.getElementById("padCheckbox").checked) {
+            if (document.getElementById("headPadCheckbox").checked) {
                 index = nthIndex(htmlBody[i], "\n\n", 1); //add closing span tag after second \n\n
-                htmlBody[i] = htmlBody[i].insert(index, "</span>\n"+htmlPad);
+                htmlBody[i] = htmlBody[i].insert(index, "</span>\n"+htmlHeadPad);
             }
             else {
                 var index = nthIndex(htmlBody[i], "\n\n", 1); //add closing span tag after second \n\n
@@ -515,9 +532,9 @@
             var temp = htmlBody[i].match(/(<p id=\"text\" class=\".*?\">)/);
             htmlBody[i] = htmlBody[i].replace(/(<p id=\"text\" class=\".*?\">)/, temp[0]+"\n"+htmlHead2); //add head 2
             
-            if (document.getElementById("padCheckbox").checked) {
+            if (document.getElementById("headPadCheckbox").checked) {
                 index = nthIndex(htmlBody[i], "\n\n", 1); //add closing span tag after second \n\n
-                htmlBody[i] = htmlBody[i].insert(index, "</span>\n"+htmlPad);
+                htmlBody[i] = htmlBody[i].insert(index, "</span>\n"+htmlHeadPad);
             }
             else {
                 var index = nthIndex(htmlBody[i], "\n\n", 1); //add closing span tag after second \n\n
@@ -548,14 +565,17 @@
             
         }
             
-        //Add indent to every triple space
-        if (document.getElementById("paraIndentCheckbox").checked) {
-            htmlBody[i] = htmlBody[i].replace(/(\n\n\n)/g, "</span>\n\n"+htmlIndent+"\n");
+        //Add indent to every triple space, include body padding if checked
+        if (document.getElementById("paraIndentCheckbox").checked && document.getElementById("paraPadCheckbox").checked) {
+            htmlBody[i] = htmlBody[i].replace(/(\n\n\n)/g, "</span>\n"+htmlParaPad+"\n\n"+htmlIndent+"\n");
         }
+        if (document.getElementById("paraIndentCheckbox").checked && !document.getElementById("paraPadCheckbox").checked) {
+            htmlBody[i] = htmlBody[i].replace(/(\n\n\n)/g, "</span>\n\n"+htmlIndent+"\n");
+        }    
         
         //Corrections
         htmlBody[i] = htmlBody[i].replace(/(<\/span>\n\n<span style="text-indent:.+><\/span>)/g, "<\/span>\n\n");
-        htmlBody[i] = htmlBody[i].replace(/(\n\n\n\n+)/g, "\n\n");
+        htmlBody[i] = htmlBody[i].replace(/(\n\n\n+)/g, "\n\n");
     
         //Add closing span tag for footer only if indent is checked
         if (document.getElementById("paraIndentCheckbox").checked) {
@@ -563,8 +583,8 @@
         }
         
         //Add padding if header 1 & 2 are not checked and delete padding if not
-        if (document.getElementById("padCheckbox").checked && !document.getElementById("head1Checkbox").checked && !document.getElementById("head2Checkbox").checked) {
-            htmlBody[i] = htmlBody[i].replace(/(<\/span>.{0,4}\n<span style=\"display:block; padding-bottom: \.5em;\"><\/span>)\n\n/, htmlPad+"\n\n"); 
+        if (document.getElementById("headPadCheckbox").checked && !document.getElementById("head1Checkbox").checked && !document.getElementById("head2Checkbox").checked) {
+            htmlBody[i] = htmlBody[i].replace(/(<\/span>.{0,4}\n<span style=\"display:block; padding-bottom: \.5em;\"><\/span>)\n\n/, htmlHeadPad+"\n\n"); 
         }
         } //end of loop
     
@@ -575,7 +595,7 @@
         for (var i = 0; i<htmlBody.length; i++) {
             htmlResult += (htmlBody[i]+"\n\n") ;
             /*var index = nthIndex(htmlBody[i], "\n\n", 1);
-            htmlBody[i] = htmlBody[i].insert(index, "</span>\n"+htmlPad);*/
+            htmlBody[i] = htmlBody[i].insert(index, "</span>\n"+htmlHeadPad);*/
         }
         htmlResult += "<\/div>";
         
@@ -616,10 +636,16 @@
                 document.getElementById("h2CodeOther").value = temp;
                 break;
                 
-            case 'PAD':
-                temp = document.getElementById("padCode").value;
-                document.getElementById("padCode").value = document.getElementById("padCodeOther").value;
-                document.getElementById("padCodeOther").value = temp;
+            case 'HEADPAD':
+                temp = document.getElementById("headPadCode").value;
+                document.getElementById("headPadCode").value = document.getElementById("headPadCodeOther").value;
+                document.getElementById("headPadCodeOther").value = temp;
+                break;
+                
+            case 'PARAPAD':
+                temp = document.getElementById("paraPadCode").value;
+                document.getElementById("paraPadCode").value = document.getElementById("paraPadCodeOther").value;
+                document.getElementById("paraPadCodeOther").value = temp;
                 break;
                 
             case 'INDENT':
@@ -632,32 +658,24 @@
     
     function highlightBoxes() {
         if (document.getElementById("head1Checkbox").checked) {
-            document.getElementById("h1Code").style.borderWidth = "3px";
-        }
-        else {
-            document.getElementById("h1Code").style.borderWidth = "1px";
-        }
+            document.getElementById("h1Code").style.borderWidth = "3px"; }
+        else { document.getElementById("h1Code").style.borderWidth = "1px"; }
         
         if (document.getElementById("head2Checkbox").checked) {
-            document.getElementById("h2Code").style.borderWidth = "3px";
-        }
-        else {
-            document.getElementById("h2Code").style.borderWidth = "1px";
-        }
+            document.getElementById("h2Code").style.borderWidth = "3px"; }
+        else { document.getElementById("h2Code").style.borderWidth = "1px"; }
         
-        if (document.getElementById("padCheckbox").checked) {
-            document.getElementById("padCode").style.borderWidth = "3px";
-        }
-        else {
-            document.getElementById("padCode").style.borderWidth = "1px";
-        }
+        if (document.getElementById("headPadCheckbox").checked) {
+            document.getElementById("headPadCode").style.borderWidth = "3px"; }
+        else { document.getElementById("headPadCode").style.borderWidth = "1px"; }
+        
+        if (document.getElementById("paraPadCheckbox").checked) {
+            document.getElementById("paraPadCode").style.borderWidth = "3px"; }
+        else { document.getElementById("paraPadCode").style.borderWidth = "1px"; }
         
         if (document.getElementById("paraIndentCheckbox").checked) {
-            document.getElementById("indentCode").style.borderWidth = "3px";
-        }
-        else {
-            document.getElementById("indentCode").style.borderWidth = "1px";
-        }
+            document.getElementById("indentCode").style.borderWidth = "3px"; }
+        else { document.getElementById("indentCode").style.borderWidth = "1px"; }
     }
     
     
