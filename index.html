@@ -72,7 +72,6 @@
             background-color: rgb(0,0,0); /* Fallback color */
             background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
         }
-
         /* Modal Content */
         .modal-content {
             background-color: #fefefe;
@@ -459,12 +458,10 @@
         }
         return i;
     }
-
     //Insert string at index
     String.prototype.insert = function (index, string) {
       if (index > 0)
        return this.substring(0, index) + string + this.substring(index, this.length);
-
       return string + this;
     };
     
@@ -487,10 +484,8 @@
             
             if (document.getElementById("padCheckbox").checked) {
                 htmlBody[i] = htmlBody[i].replace(/(<\/span>.{0,4}\n\n)/, "<\/span><\/span>\n\n"+htmlHead2+"\n");
-
                 index = nthIndex(htmlBody[i], "\n\n", 2); //add closing span tag after second \n\n
                 htmlBody[i] = htmlBody[i].insert(index, "</span>\n"+htmlPad);
-
             }
             else {
                 htmlBody[i] = htmlBody[i].replace(/(<\/span>.{0,4}\n\n)/, "<\/span><\/span>\n\n"+htmlHead2+"\n");
@@ -508,7 +503,6 @@
             if (document.getElementById("padCheckbox").checked) {
                 index = nthIndex(htmlBody[i], "\n\n", 1); //add closing span tag after second \n\n
                 htmlBody[i] = htmlBody[i].insert(index, "</span>\n"+htmlPad);
-
             }
             else {
                 var index = nthIndex(htmlBody[i], "\n\n", 1); //add closing span tag after second \n\n
@@ -524,7 +518,6 @@
             if (document.getElementById("padCheckbox").checked) {
                 index = nthIndex(htmlBody[i], "\n\n", 1); //add closing span tag after second \n\n
                 htmlBody[i] = htmlBody[i].insert(index, "</span>\n"+htmlPad);
-
             }
             else {
                 var index = nthIndex(htmlBody[i], "\n\n", 1); //add closing span tag after second \n\n
@@ -537,28 +530,33 @@
             var index = nthIndex(htmlBody[i], "\n\n", 2);   //add indent after second occurence of \n\n
             htmlBody[i] = htmlBody[i].insert(index, "\n\n"+htmlIndent);
             
-            htmlBody[i] = htmlBody[i].replace(/(\n\n\n)/g, "</span>\n\n"+htmlIndent+"\n");
         }
         if (document.getElementById("paraIndentCheckbox").checked && document.getElementById("head1Checkbox").checked && !document.getElementById("head2Checkbox").checked) {
             var index = nthIndex(htmlBody[i], "\n\n", 1);   //add indent after first occurence of \n\n
             htmlBody[i] = htmlBody[i].insert(index, "\n\n"+htmlIndent);
             
-            htmlBody[i] = htmlBody[i].replace(/(\n\n\n)/g, "</span>\n\n"+htmlIndent+"\n");
         }
         if (document.getElementById("paraIndentCheckbox").checked && document.getElementById("head2Checkbox").checked && !document.getElementById("head1Checkbox").checked) {
             var index = nthIndex(htmlBody[i], "\n\n", 1);   //add indent after first occurence of \n\n
             htmlBody[i] = htmlBody[i].insert(index, "\n\n"+htmlIndent);
             
-            htmlBody[i] = htmlBody[i].replace(/(\n\n\n)/g, "</span>\n\n"+htmlIndent+"\n");
         }
         if (document.getElementById("paraIndentCheckbox").checked && !document.getElementById("head1Checkbox").checked && !document.getElementById("head2Checkbox").checked) {
             var temp = htmlBody[i].match(/(<p id=\"text\" class=\".*?\">)/);
             
             htmlBody[i] = htmlBody[i].replace(/(<p id=\"text\" class=\".*?\">)/, temp[0]+"\n"+htmlIndent);
             
+        }
+            
+        //Add indent to every triple space
+        if (document.getElementById("paraIndentCheckbox").checked) {
             htmlBody[i] = htmlBody[i].replace(/(\n\n\n)/g, "</span>\n\n"+htmlIndent+"\n");
         }
         
+        //Corrections
+        htmlBody[i] = htmlBody[i].replace(/(<\/span>\n\n<span style="text-indent:.+><\/span>)/g, "<\/span>\n\n");
+        htmlBody[i] = htmlBody[i].replace(/(\n\n\n\n+)/g, "\n\n");
+    
         //Add closing span tag for footer only if indent is checked
         if (document.getElementById("paraIndentCheckbox").checked) {
             htmlBody[i] = htmlBody[i].replace(/\n(<\/p>)/, htmlFooter);  //add footer
@@ -666,15 +664,12 @@
     
     // Get the modal
     var modal = document.getElementById("tagModal");
-
     // Get the button that opens the modal
     var btn = document.getElementById("customizeTags");
-
     // When the user clicks the button, open the modal 
     btn.onclick = function() {
         modal.style.display = "block";
     }
-
     // When the user clicks anywhere outside of the modal, close it
     window.onclick = function(event) {
         if (event.target == modal) {
