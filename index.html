@@ -606,7 +606,7 @@
             /*var index = nthIndex(htmlBody[i], "\n\n", 1);
             htmlBody[i] = htmlBody[i].insert(index, "</span>\n"+htmlHeadPad);*/
         }
-        if (htmlResult.includes("<div>")) { //Add </div> to end of result if <div> is found
+        if (htmlResult.includes("<div")) { //Add </div> to end of result if <div is found
             htmlResult += "<\/div>"; }
         
         document.getElementById("htmlResult").value = htmlResult; //Set result
