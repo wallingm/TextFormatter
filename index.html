@@ -162,53 +162,53 @@
                     <!-- Heading 1 -->
                     <b>Heading 1</b><br>
                     <div style="display:flex; align-items:center; justify-content:left;">
-                    <textarea id="h1Code" type="text" style="width:42%; height:100px; resize: none; border:solid 1px black;"></textarea>
+                    <textarea id="h1Code" type="text" style="width:42%; height:80px; resize: none; border:solid 1px black;"></textarea>
                         
                     <button id="switchH1" onclick="switchField('H1');" style="min-width:5%; height:40px; top:10px; margin-right:10px; margin-left:10px;">&#8596;</button>
                         
-                    <textarea id="h1CodeOther" type="text" style="width:42%; height:100px; resize: none;"></textarea>
+                    <textarea id="h1CodeOther" type="text" style="width:42%; height:80px; resize: none;"></textarea>
                     </div>
                     <br>
                     <!-- Heading 2 -->
                     <b>Heading 2</b><br>
                     <div style="display:flex; align-items:center; justify-content:left;">
-                    <textarea id="h2Code" type="text" style="width:42%; height:100px; resize: none; border:solid 1px black;"></textarea>
+                    <textarea id="h2Code" type="text" style="width:42%; height:80px; resize: none; border:solid 1px black;"></textarea>
                         
                     <button id="switchH2" onclick="switchField('H2');" style="min-width:5%; height:40px; top:10px; margin-right:10px; margin-left:10px;">&#8596;</button>
                         
-                    <textarea id="h2CodeOther" type="text" style="width:42%; height:100px; resize: none;"></textarea>
+                    <textarea id="h2CodeOther" type="text" style="width:42%; height:80px; resize: none;"></textarea>
                     </div>
                     <br>
                     <!-- Heading Padding -->
                     <b>Heading Padding</b><br>
                     <div style="display:flex; align-items:center; justify-content:left;">
-                    <textarea id="headPadCode" type="text" style="width:42%; height:50px; resize: none; border:solid 3px black;"></textarea>
+                    <textarea id="headPadCode" type="text" style="width:42%; height:80px; resize: none; border:solid 3px black;"></textarea>
                     
                     <button id="switchHeadPad" onclick="switchField('HEADPAD');" style="min-width:5%; height:40px; top:10px; margin-right:10px; margin-left:10px;">&#8596;</button>
                     
-                    <textarea id="headPadCodeOther" type="text" style="width:42%; height:50px; resize: none;"></textarea>
+                    <textarea id="headPadCodeOther" type="text" style="width:42%; height:80px; resize: none;"></textarea>
                     </div>
                     <br>
                     
                     <!-- Body Padding -->
                     <b>Body Padding</b><br>
                     <div style="display:flex; align-items:center; justify-content:left;">
-                    <textarea id="paraPadCode" type="text" style="width:42%; height:50px; resize: none; border:solid 3px black;"></textarea>
+                    <textarea id="paraPadCode" type="text" style="width:42%; height:80px; resize: none; border:solid 3px black;"></textarea>
                     
                     <button id="switchparaPad" onclick="switchField('PARAPAD');" style="min-width:5%; height:40px; top:10px; margin-right:10px; margin-left:10px;">&#8596;</button>
                     
-                    <textarea id="paraPadCodeOther" type="text" style="width:42%; height:50px; resize: none;"></textarea>
+                    <textarea id="paraPadCodeOther" type="text" style="width:42%; height:80px; resize: none;"></textarea>
                     </div>
                     <br>
                     
                     <!-- Paragraph Indents -->
                     <b>Paragraph Indents</b><br>
                     <div style="display:flex; align-items:center; justify-content:left;">
-                    <textarea id="indentCode" type="text" style="width:42%; height:50px; resize: none; border:solid 3px black;"></textarea>
+                    <textarea id="indentCode" type="text" style="width:42%; height:80px; resize: none; border:solid 3px black;"></textarea>
                     
                     <button id="switchH1" onclick="switchField('INDENT');" style="min-width:5%; height:40px; top:10px; margin-right:10px; margin-left:10px;">&#8596;</button>
                     
-                    <textarea id="indentCodeOther" type="text" style="width:42%; height:50px; resize: none;"></textarea>
+                    <textarea id="indentCodeOther" type="text" style="width:42%; height:80px; resize: none;"></textarea>
                     </div>
                     
                 </div>
@@ -439,14 +439,23 @@
     //// HTML TAB ////
     
     //Set default tags
-    var htmlHead1, htmlHead2, htmlHeadPad, htmlParaPad, htmlIndent, htmlIndentFirst, htmlFooter;
+    var htmlHead1, htmlHead2, htmlHeadPad, htmlParaPad, htmlIndent, htmlFooter;
     
     //Set default textarea values
-    document.getElementById("h1Code").value = "<span style=\"text-align:left; display:block; font-size:var(--headMedium); text-shadow:3px 3px 10px #7C7E7E; color: #BA1319;\">";
-    document.getElementById("h2Code").value = "<span style=\"text-align:left; display:block; font-size:var(--headSmall); text-shadow:2px 2px 8px #7C7E7E; color: #00548F;\">";
+    document.getElementById("h1Code").value = "<span style=\"text-align:left; display:block; font-size:var(--headLarge); color: #BA1319; text-shadow:3px 3px 10px #7C7E7E;\">";
+    document.getElementById("h1CodeOther").value = "<span style=\"text-align:left; display:block; font-size:var(--headMedium); color: #FF0000; text-shadow:3px 3px 10px #7C7E7E;\">";
+    
+    document.getElementById("h2Code").value = "<span style=\"text-align:left; display:block; font-size:var(--headSmall); color:#00548F;\">";
+    document.getElementById("h2CodeOther").value = "<span style=\"text-align:left; display:block; font-size:var(--headSmall); text-shadow:2px 2px 8px #7C7E7E; color:#00548F;\">";
+    
     document.getElementById("headPadCode").value = "<span style=\"display:block; padding-bottom: 1.0em;\"><\/span>";
+    document.getElementById("headPadCodeOther").value = "<span style=\"display:block; padding-bottom: 2.0em;\"><\/span>";
+    
     document.getElementById("paraPadCode").value = "<span style=\"display:block; padding-bottom: 0.5em;\"><\/span>";
+    document.getElementById("paraPadCodeOther").value = "<span style=\"display:block; padding-bottom: 1.0em;\"><\/span>";
+    
     document.getElementById("indentCode").value = "<span style=\"text-indent:1.5em; display:block; color: #000;\">";
+    document.getElementById("indentCodeOther").value = "<span style=\"text-indent:1.5em; display:block; color: #fff;\">";
     
     function setTags() {
         
@@ -490,14 +499,14 @@
         htmlBody = document.getElementById("htmlBody").value;
         htmlResult = htmlBody;
         
-        htmlBody = htmlBody.match(/(<p(.|\n)*?<\/p>)/g); //create array of everything betweeen <p> tags
+        htmlBody = htmlBody.match(/(<p(.|\n)*?<\/p>)/g); //create array of each <p></p> grouping
     
         for (var i = 0; i<htmlBody.length; i++) {
         //Header 1 & 2 are both checked
         if (document.getElementById("head1Checkbox").checked && document.getElementById("head2Checkbox").checked) {
             
-            var temp = htmlBody[i].match(/(<p id=\"text\" class=\".*?\">)/);
-            htmlBody[i] = htmlBody[i].replace(/(<p id=\"text\" class=\".*?\">)/, temp[0]+"\n"+htmlHead1); //add head 1
+            var temp = htmlBody[i].match(/(<p.*?>)/);
+            htmlBody[i] = htmlBody[i].replace(/(<p.*?>)/, temp[0]+"\n"+htmlHead1); //add head 1
             
             if (document.getElementById("headPadCheckbox").checked) {
                 htmlBody[i] = htmlBody[i].replace(/(<\/span>.{0,4}\n\n)/, "<\/span><\/span>\n\n"+htmlHead2+"\n");
@@ -514,8 +523,8 @@
                                         
         //Only Header 1 is checked
         if (document.getElementById("head1Checkbox").checked && !document.getElementById("head2Checkbox").checked) {
-            var temp = htmlBody[i].match(/(<p id=\"text\" class=\".*?\">)/);
-            htmlBody[i] = htmlBody[i].replace(/(<p id=\"text\" class=\".*?\">)/, temp[0]+"\n"+htmlHead1); //add head 1
+            var temp = htmlBody[i].match(/(<p.*?>)/);
+            htmlBody[i] = htmlBody[i].replace(/(<p.*?>)/, temp[0]+"\n"+htmlHead1); //add head 1
             
             if (document.getElementById("headPadCheckbox").checked) {
                 index = nthIndex(htmlBody[i], "\n\n", 1); //add closing span tag after second \n\n
@@ -529,8 +538,8 @@
         
         //Only Header 2 is checked
         if (document.getElementById("head2Checkbox").checked && !document.getElementById("head1Checkbox").checked) {
-            var temp = htmlBody[i].match(/(<p id=\"text\" class=\".*?\">)/);
-            htmlBody[i] = htmlBody[i].replace(/(<p id=\"text\" class=\".*?\">)/, temp[0]+"\n"+htmlHead2); //add head 2
+            var temp = htmlBody[i].match(/(<p.*?>)/);
+            htmlBody[i] = htmlBody[i].replace(/(<p.*?>)/, temp[0]+"\n"+htmlHead2); //add head 2
             
             if (document.getElementById("headPadCheckbox").checked) {
                 index = nthIndex(htmlBody[i], "\n\n", 1); //add closing span tag after second \n\n
@@ -559,9 +568,9 @@
             
         }
         if (document.getElementById("paraIndentCheckbox").checked && !document.getElementById("head1Checkbox").checked && !document.getElementById("head2Checkbox").checked) {
-            var temp = htmlBody[i].match(/(<p id=\"text\" class=\".*?\">)/);
+            var temp = htmlBody[i].match(/(<p.*?>)/);
             
-            htmlBody[i] = htmlBody[i].replace(/(<p id=\"text\" class=\".*?\">)/, temp[0]+"\n"+htmlIndent);
+            htmlBody[i] = htmlBody[i].replace(/(<p.*?>)/, temp[0]+"\n"+htmlIndent);
             
         }
             
@@ -597,9 +606,10 @@
             /*var index = nthIndex(htmlBody[i], "\n\n", 1);
             htmlBody[i] = htmlBody[i].insert(index, "</span>\n"+htmlHeadPad);*/
         }
-        htmlResult += "<\/div>";
+        if (htmlResult.includes("<div>")) { //Add </div> to end of result if <div> is found
+            htmlResult += "<\/div>"; }
         
-        document.getElementById("htmlResult").value = htmlResult;
+        document.getElementById("htmlResult").value = htmlResult; //Set result
             
     }
     
