@@ -134,8 +134,6 @@
     
     
     
-    
-    
     <!-- HTML Tab -->
     <div id="HTML" class="tabcontent">
         <div class="row">  
@@ -150,8 +148,8 @@
                 <b>Add tags for:</b><br>
                 <input id="head1Checkbox" type="checkbox" onchange=highlightBoxes()><label for="head1Checkbox">Heading 1</label><br>
                 <input id="head2Checkbox" type="checkbox" onchange=highlightBoxes()><label for="head2Checkbox">Heading 2</label><br>
-                <input id="headPadCheckbox" type="checkbox" checked="true" onchange=highlightBoxes()><label for="headPadCheckbox">Heading Padding</label><br>
-                <input id="paraPadCheckbox" type="checkbox" checked="true" onchange=highlightBoxes()><label for="paraPadCheckbox">Paragraph Padding</label><br>
+                <input id="headPadCheckbox" type="checkbox" onchange=highlightBoxes()><label for="headPadCheckbox">Heading Padding</label><br>
+                <input id="paraPadCheckbox" type="checkbox" onchange=highlightBoxes()><label for="paraPadCheckbox">Paragraph Padding</label><br>
                 <input id="paraIndentCheckbox" type="checkbox" checked="true" onchange=highlightBoxes()><label for="paraIndentCheckbox">Paragraph Indents</label><br>
                 <button id="customizeTags" style="margin-top: 5px">Customize Tags</button>
                 
@@ -159,6 +157,14 @@
                 <div id="tagModal" class="modal">
                 <div class="modal-content">
                     <h2>Customize Tags</h2>
+                    <!-- Find and Replace -->
+                    <input id="findReplaceCheckbox" type="checkbox">
+                    <label for="findReplaceCheckbox"><b>Find and Replace</b></label><br>
+                    <div>
+                    Find: <input id="htmlFind" value="id=&quot;text&quot;"><br>
+                    Replace with: <input id="htmlReplace" value="id=&quot;text2&quot;">
+                    </div>
+                    <br>
                     <!-- Heading 1 -->
                     <b>Heading 1</b><br>
                     <div style="display:flex; align-items:center; justify-content:left;">
@@ -182,7 +188,7 @@
                     <!-- Heading Padding -->
                     <b>Heading Padding</b><br>
                     <div style="display:flex; align-items:center; justify-content:left;">
-                    <textarea id="headPadCode" type="text" style="width:42%; height:80px; resize: none; border:solid 3px black;"></textarea>
+                    <textarea id="headPadCode" type="text" style="width:42%; height:80px; resize: none; border:solid 1px black;"></textarea>
                     
                     <button id="switchHeadPad" onclick="switchField('HEADPAD');" style="min-width:5%; height:40px; top:10px; margin-right:10px; margin-left:10px;">&#8596;</button>
                     
@@ -193,7 +199,7 @@
                     <!-- Body Padding -->
                     <b>Body Padding</b><br>
                     <div style="display:flex; align-items:center; justify-content:left;">
-                    <textarea id="paraPadCode" type="text" style="width:42%; height:80px; resize: none; border:solid 3px black;"></textarea>
+                    <textarea id="paraPadCode" type="text" style="width:42%; height:80px; resize: none; border:solid 1px black;"></textarea>
                     
                     <button id="switchparaPad" onclick="switchField('PARAPAD');" style="min-width:5%; height:40px; top:10px; margin-right:10px; margin-left:10px;">&#8596;</button>
                     
@@ -442,13 +448,13 @@
     var htmlHead1, htmlHead2, htmlHeadPad, htmlParaPad, htmlIndent, htmlFooter;
     
     //Set default textarea values
-    document.getElementById("h1Code").value = "<span style=\"text-align:left; display:block; font-size:var(--headLarge); color: #BA1319; text-shadow:3px 3px 10px #7C7E7E;\">";
-    document.getElementById("h1CodeOther").value = "<span style=\"text-align:left; display:block; font-size:var(--headMedium); color: #FF0000; text-shadow:3px 3px 10px #7C7E7E;\">";
+    document.getElementById("h1Code").value = "<span style=\"text-align:left; display:block; font-size:var(--headLarge); color:#000;\">";
+    document.getElementById("h1CodeOther").value = "<span style=\"text-align:left; display:block; font-size:var(--headLarge); color:#BA1319; text-shadow:3px 3px 10px #7C7E7E;\">";
     
-    document.getElementById("h2Code").value = "<span style=\"text-align:left; display:block; font-size:var(--headSmall); color:#00548F;\">";
-    document.getElementById("h2CodeOther").value = "<span style=\"text-align:left; display:block; font-size:var(--headSmall); text-shadow:2px 2px 8px #7C7E7E; color:#00548F;\">";
+    document.getElementById("h2Code").value = "<span style=\"text-align:left; display:block; font-size:var(--headSmall); color:#000;\">";
+    document.getElementById("h2CodeOther").value = "<span style=\"text-align:left; display:block; font-size:var(--headSmall); color:#00548F; text-shadow:2px 2px 8px #7C7E7E;\">";
     
-    document.getElementById("headPadCode").value = "<span style=\"display:block; padding-bottom: 1.0em;\"><\/span>";
+    document.getElementById("headPadCode").value = "<span style=\"display:block; padding-bottom: 0.5em;\"><\/span>";
     document.getElementById("headPadCodeOther").value = "<span style=\"display:block; padding-bottom: 2.0em;\"><\/span>";
     
     document.getElementById("paraPadCode").value = "<span style=\"display:block; padding-bottom: 0.5em;\"><\/span>";
@@ -458,6 +464,10 @@
     document.getElementById("indentCodeOther").value = "<span style=\"text-indent:1.5em; display:block; color: #fff;\">";
     
     function setTags() {
+        
+        htmlFind = document.getElementById("htmlFind").value;
+        
+        htmlReplace = document.getElementById("htmlReplace").value;
         
         htmlHead1 = document.getElementById("h1Code").value;
         
@@ -582,9 +592,8 @@
             htmlBody[i] = htmlBody[i].replace(/(\n\n\n)/g, "</span>\n\n"+htmlIndent+"\n");
         }    
         
-        //Corrections
+        //Correction
         htmlBody[i] = htmlBody[i].replace(/(<\/span>\n\n<span style="text-indent:.+><\/span>)/g, "<\/span>\n\n");
-        htmlBody[i] = htmlBody[i].replace(/(\n\n\n+)/g, "\n\n");
     
         //Add closing span tag for footer only if indent is checked
         if (document.getElementById("paraIndentCheckbox").checked) {
@@ -609,8 +618,18 @@
         if (htmlResult.includes("<div")) { //Add </div> to end of result if <div is found
             htmlResult += "<\/div>"; }
         
-        document.getElementById("htmlResult").value = htmlResult; //Set result
-            
+        //Corrections
+        htmlResult = htmlResult.replace(/(\n\n\n+)/g, "\n\n"); //remove extra whitespace
+        //htmlResult = htmlResult.replace(/(<span style="text-indent.*?">\n)/g, htmlIndent);
+        
+        //Find & Replace
+        if (document.getElementById("findReplaceCheckbox").checked && htmlFind.length != 0 && htmlReplace.length != 0) {
+            var regexFind = new RegExp(htmlFind.toString(), "g");
+            htmlResult = htmlResult.replace(regexFind, htmlReplace.toString());
+        }
+        
+        //Set result
+        document.getElementById("htmlResult").value = htmlResult;
     }
     
     function htmlClearText() { 
@@ -687,8 +706,6 @@
             document.getElementById("indentCode").style.borderWidth = "3px"; }
         else { document.getElementById("indentCode").style.borderWidth = "1px"; }
     }
-    
-    
     
     // Get the modal
     var modal = document.getElementById("tagModal");
