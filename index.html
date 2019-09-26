@@ -92,6 +92,7 @@
     <div class="tab">
         <button class="tablinks" onclick="openTab(event, 'Transcript')" id="defaultOpen">Transcript</button>
         <button class="tablinks" onclick="openTab(event, 'HTML')">HTML</button>
+        <button class="tablinks" onclick="openTab(event, 'EPUB')">EPUB</button>
     </div>
     
     <!-- Transcript Tab -->
@@ -231,7 +232,24 @@
         <b>Result:</b><br>
         <textarea id="htmlResult" style="width:100%; height:252px"></textarea><br>
     </div>
-
+    
+    <!-- EPUB Tab -->
+    <div id="EPUB" class="tabcontent">
+        <b>Transcript:</b><br> 
+        <div style="padding-bottom: 5px">
+            <textarea id="epubBody" style="width:100%; height:200px;"></textarea><br>
+        </div>
+        
+        <button onclick="epubFormat()" style="width: 37%; height: 50px; margin-bottom: 5px;">Format</button>
+        <button onclick="epubClearText()" style="width: 20%; height: 50px; margin-bottom: 5px">Clear Inputs</button>
+        <button onclick="epubCopyResult()" style="width: 20%; height: 50px; margin-bottom: 5px">Copy Result</button>
+        <button onclick="epubClearResult()" style="width: 20%; height: 50px; margin-bottom: 5px">Clear Result</button><br>
+        <b>Result:</b><br> 
+        <textarea id="epubResult" style="width:100%; height:252px"></textarea><br>
+    </div>
+    
+    
+    
 <script>
     function openTab(evt, tabName) {
         var i, tabcontent, tablinks;
@@ -248,6 +266,14 @@
     }
     // Get the element with id="defaultOpen" and click on it
     document.getElementById("defaultOpen").click();
+    
+    
+
+    
+    
+    
+    
+    //// Transcript TAB ////
     
     var result = document.getElementById("result").value;
     //var sentence = /["']?[A-Z][^.?!]+((?![.?!]['"]?\s["']?[A-Z][^.?!]).)+[.?!'"]+/g
@@ -722,6 +748,44 @@
         }
     }
     
+    
+    
+    
+    
+    
+    
+    //// EPUB TAB ////
+    var epubResult = document.getElementById("epubResult").value;
+    
+    function epubFormat() {
+        epubResult = "";
+        epubBody = document.getElementById("epubBody").value;
+        epubBody = epubBody.replace(/(###[0-9]{0,3}|---)/g,"");
+        epubBody = epubBody.match(/(?:[-'’%$#&\/]\b|\b[-'’%$#&\/]|[0-9A-Za-zÀ-ÖØ-öø-ÿ]|\([0-9A-Za-zÀ-ÖØ-öø-ÿ]+\))+(?=\s|$|\b)/g); //matches each word
+        //Update Result
+        for (var i = 0; i < epubBody.length; i++) {
+            epubResult += epubBody[i]+"\n";
+        }
+        document.getElementById("epubResult").value = epubResult;
+    }
+    
+    function epubClearText() { 
+        document.getElementById("epubBody").value = ""; 
+    }
+    
+    function epubCopyResult() {
+        var copyText = document.getElementById("epubResult");
+        copyText.select();
+        document.execCommand("copy");
+    }
+    
+    function epubClearResult() {
+        var r = confirm("CLEAR RESULT\nAre you sure?");
+        if (r == true) {
+            epubResult = ""; //Reset result
+            document.getElementById("epubResult").value = epubResult;
+        }
+    }
 </script> 
 </body>
 </html>
