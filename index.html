@@ -440,10 +440,10 @@
         }
         //New line between quotes
         for (var i = 0; i < mainArray.length; i++) {
-            mainArray[i] = mainArray[i].replace(/([a-z]|”|"|')(\.|\!|\?)([A-Z]|“|"|')/g, "$1$2\n$3");
+            mainArray[i] = mainArray[i].replace(/([a-z]|”|"|’|')(\.|\!|\?)([A-Z]|“|"|‘|')/g, "$1$2\n$3");
         }
         for (var i = 0; i < mainArray.length; i++) {
-            mainArray[i] = mainArray[i].replace(/(”|")([A-Z]|“|")/g, "$1\n$2");
+            mainArray[i] = mainArray[i].replace(/(”|"|’) ?([A-Z]|“|"|‘)/g, "$1\n$2");
         }
         
         //Update Textbox
