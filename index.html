@@ -139,7 +139,7 @@
     <textarea id="result" style="width:100%; height:240px"></textarea><br>
         
     <a href="javascript:void(0)" style="color:black" onclick="($('#showDetails').is(':visible')) ? $('#showDetails').hide() : $('#showDetails').show()"><pre>Show Details</pre></a>
-    <div id="showDetails" style="color:blue">
+    <div id="showDetails" style="color:blue; display:none">
         <pre>Left Page Body:</pre>
         <pre id="resultL">{{bodyL | tokenize | json}}</pre>
         <pre>{{bodyL | pluralize }}</pre>
@@ -365,10 +365,12 @@
         var h1L = document.getElementById("head1L").value;
         var h2L = document.getElementById("head2L").value;
         var bL = document.getElementById("bodyL").value;
+        var resultL = document.getElementById("resultL").innerHTML;
         
         var h1R = document.getElementById("head1R").value;
         var h2R = document.getElementById("head2R").value;
         var bR = document.getElementById("bodyR").value;
+        var resultR = document.getElementById("resultR").innerHTML;
         
         //// LEFT PAGE
         //Push pg# and headings to main arrays
@@ -379,13 +381,21 @@
         
         
         //Find sentences and push to array
-        if (bL.length > 0) { 
-            bodyLArray = JSON.parse(document.getElementById('resultL').innerHTML);
+        if (bL.length > 0) {
+            
+            bodyLArray = JSON.parse(resultL);
             //Add \n
             for (var i = 0; i < bodyLArray.length; i++) {
                 bodyLArray[i] = bodyLArray[i]+"\n";
             }
             bodyLArray.push("\n");
+            
+            //Add period if missing
+            for (var i = 0; i < bodyLArray.length; i++) {
+                if (i != bodyLArray.length-2) {
+                    bodyLArray[i] = bodyLArray[i].replace(/([a-z])\n/, "$1.\n");
+                }
+            }
             
             //Add to main array
             mainArray = mainArray.concat(bodyLArray); 
@@ -397,7 +407,7 @@
         else if (h2R.length != 0) { mainArray.push(h2R + "\n\n"); }
         
         if (bR.length > 0) { 
-            bodyRArray = JSON.parse(document.getElementById('resultR').innerHTML);
+            bodyRArray = JSON.parse(resultR);
             //Add --- and \n
             for (var i = 0; i < bodyRArray.length; i++) {
                 if (i == 0 && h1R.length == 0 && h2R.length == 0) {
@@ -405,6 +415,14 @@
                 }
                 bodyRArray[i] = bodyRArray[i]+"\n";
             }
+            
+            //Add period if missing
+            for (var i = 0; i < bodyRArray.length; i++) {
+                if (i != bodyRArray.length-1) {
+                    bodyRArray[i] = bodyRArray[i].replace(/([a-z])\n/, "$1.\n");
+                }
+            }
+            
             //Add to main array
             mainArray = mainArray.concat(bodyRArray); 
         }
@@ -413,9 +431,19 @@
             mainArray.push("\n");
         } 
         
+        
+        
+        ////MAIN ARRAY CORRECTIONS
         //Fix mdash space
         for (var i = 0; i < mainArray.length; i++) {
             mainArray[i] = mainArray[i].replace(/(.)—(.)/g, "$1— $2");
+        }
+        //New line between quotes
+        for (var i = 0; i < mainArray.length; i++) {
+            mainArray[i] = mainArray[i].replace(/([a-z]|”|"|')(\.|\!|\?)([A-Z]|“|"|')/g, "$1$2\n$3");
+        }
+        for (var i = 0; i < mainArray.length; i++) {
+            mainArray[i] = mainArray[i].replace(/(”|")([A-Z]|“|")/g, "$1\n$2");
         }
         
         //Update Textbox
