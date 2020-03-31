@@ -94,7 +94,7 @@
 </head>
     
 <body ng-app='sbdApp' ng-controller='Index'>
-    <h2>Text Formatter</h2>
+    <h2>Text Formatter v2</h2>
     
     <div class="tab">
         <button class="tablinks" onclick="openTab(event, 'Transcript')" id="defaultOpen">Transcript</button>
@@ -117,7 +117,7 @@
             Heading 2: <input id="head2L" type="text" style="width: 100%; margin-bottom: 5px"><br>
 
             Body:<br>
-            <textarea id="bodyL" class="form-control" ng-model='bodyL' style="width:100%; height:75px"></textarea><br>
+            <textarea id="bodyL" ng-model='bodyL' class="form-control" ng-change="update()" style="width:100%; height:75px"></textarea><br>
         </div>
         
         <!-- Right Page -->
@@ -127,11 +127,11 @@
             Heading 2: <input id="head2R" type="text" style="width: 100%; margin-bottom: 5px"><br>
     
             Body:<br>
-            <textarea id="bodyR" class="form-control" ng-model='bodyR' style="width:100%; height:75px"></textarea><br>
+            <textarea id="bodyR" ng-model='bodyR' class="form-control" ng-change="update()" style="width:100%; height:75px"></textarea><br>
         </div>
     </div>
     
-    <button onclick="format()" style="width: 37%; height: 50px; margin-bottom: 5px">Format</button>
+    <button onclick="preFormat()" style="width: 37%; height: 50px; margin-bottom: 5px">Format</button>
     <button onclick="clearText()" style="width: 20%; height: 50px; margin-bottom: 5px">Clear Inputs</button>
     <button onclick="copyResult()" style="width: 20%; height: 50px; margin-bottom: 5px">Copy Result</button>
     <button onclick="clearResult()" style="width: 20%; height: 50px; margin-bottom: 5px">Reset All</button><br>
@@ -319,8 +319,10 @@
     var app = angular.module('sbdApp', []);
 
     app.controller('Index', function($scope) {
-        $scope.bodyL = "";
-        $scope.bodyR = "";
+        $scope.update = function(){
+            $scope.bodyL = $scope.bodyL;
+            $scope.bodyR = $scope.bodyR;
+        };
     });
 
     app.filter('tokenize', function() {
@@ -346,11 +348,23 @@
     
 
     
-    
-    
-    
-    
-    
+    function preFormat() { 
+        var bL = document.getElementById("bodyL").value;
+        $('#bodyL').val(bL.replace(/(\n)/g," "));
+        
+        var bR = document.getElementById("bodyR").value;
+        $('#bodyR').val(bR.replace(/(\n)/g," "));
+
+        var e1 = document.getElementById("bodyL");
+        var $e1 = angular.element(e1);
+        $e1.triggerHandler('input');
+        
+        var e2 = document.getElementById("bodyR");
+        var $e2 = angular.element(e2);
+        $e2.triggerHandler('input');
+        
+        format();
+    }
     
     function format() {
         result = document.getElementById("result").value;
@@ -450,6 +464,11 @@
         for (var i = 0; i < mainArray.length; i++) {
             result += mainArray[i];
         }
+        
+        //Fix ellipsis with newline
+        result = result.replace(/( \.\n\.\n\.\n)/g,"... ");
+        
+        //Display
         document.getElementById("result").value = result;
     }
     
