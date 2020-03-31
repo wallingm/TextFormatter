@@ -82,7 +82,7 @@ exports.isSentenceStarter = function(str) {
 }
 
 exports.isCommonAbbreviation = function(str) {
-    var noSymbols = str.replace(/[-'`~!@#$%^&*()_|+=?;:“‘'"’”,.<>\{\}\[\]\\\/]/gi, "");
+    var noSymbols = str.replace(/[-'`~!@#$%^&*()_|+=?;:'",.<>\{\}\[\]\\\/]/gi, "");
 
     return ~abbreviations.indexOf(noSymbols);
 }
@@ -342,7 +342,7 @@ exports.sentences = function(text, user_options) {
         // A dot might indicate the end sentences
         // Exception: The next sentence starts with a word (non abbreviation)
         //            that has a capital letter.
-        if (stringHelper.endsWithChar(words[i], ".") || stringHelper.endsWithChar(words[i], "!") || stringHelper.endsWithChar(words[i], "?")) {
+        if (stringHelper.endsWithChar(words[i], ".")) {
             // Check if there is a next word
             // This probably needs to be improved with machine learning
             if (i+1 < L) {
